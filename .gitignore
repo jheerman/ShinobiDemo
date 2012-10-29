@@ -2,5 +2,8 @@
 bin
 obj
 
+#ignore contents of the Shinobi license dir
+depends
+
 # mstest test results
 TestResults

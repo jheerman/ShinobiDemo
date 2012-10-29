@@ -19,9 +19,8 @@ namespace ShinobiStockChart
     
     public StockChartViewController (string symbol) : base ("StockChartViewController", null)
     {
-      _symbol = symbol;
-      
-      FechPriceData ();
+		_symbol = symbol;
+		FechPriceData ();
     }
   
     public override void ViewDidLoad ()
@@ -32,7 +31,8 @@ namespace ShinobiStockChart
       
       // create the chart and add to the view      
       _chart = new ShinobiChart (chartHostView.Bounds);
-      
+	  _chart.LicenseKey = @"ft6obh5sR2HPP7gMjAxMjExMjdpbmZvQHNoaW5vYmljb250cm9scy5jb20=DoMioOfF4W6zCl90EggbYPCPBNUFz7KZI8jJaqH4TopBrv+A72R/DiFUWilWUIZIzd3Fq/c4smVsPQUtz+g6WZ2fEbW5C8/zAR/vNbl9h4dhwozVXjmet42hJJPu+qgPqbX1XSnQfIxpqO7wI+B4DgfMsrP8=BQxSUisl3BaWf/7myRmmlIjRnMU2cA7q+/03ZX9wdj30RzapYANf51ee3Pi8m2rVW6aD7t6Hi4Qy5vv9xpaQYXF5T7XzsafhzS3hbBokp36BoJZg8IrceBj742nQajYyV7trx5GIw9jy/V6r0bvctKYwTim7Kzq+YPWGMtqtQoU=PFJTQUtleVZhbHVlPjxNb2R1bHVzPnh6YlRrc2dYWWJvQUh5VGR6dkNzQXUrUVAxQnM5b2VrZUxxZVdacnRFbUx3OHZlWStBK3pteXg4NGpJbFkzT2hGdlNYbHZDSjlKVGZQTTF4S2ZweWZBVXBGeXgxRnVBMThOcDNETUxXR1JJbTJ6WXA3a1YyMEdYZGU3RnJyTHZjdGhIbW1BZ21PTTdwMFBsNWlSKzNVMDg5M1N4b2hCZlJ5RHdEeE9vdDNlMD08L01vZHVsdXM+PEV4cG9uZW50PkFRQUI8L0V4cG9uZW50PjwvUlNBS2V5VmFsdWU+";
+
       // set the datasource
       _charDataSource = new StockChartDataSource ();
       _chart.DataSource = _charDataSource;
@@ -82,8 +82,6 @@ namespace ShinobiStockChart
       WebClient client = new WebClient ();
       client.DownloadStringCompleted += (s,e) => {
         ParseCSVStockPrices (e.Result); 
-        progressIndicatorView.Hidden = true;
-        chartHostView.Hidden = false;
       };
       client.DownloadStringAsync (new Uri (url));
     }
@@ -111,6 +109,8 @@ namespace ShinobiStockChart
         _charDataSource.DataPoints = seriesData;
         _chart.ReloadData ();
         _chart.RedrawChart ();
+		progressIndicatorView.Hidden = true;
+		chartHostView.Hidden = false;
       }
       );
     }
@@ -136,7 +136,7 @@ namespace ShinobiStockChart
         return null;
       }
       
-      public override SChartData[] GetDataPoints (ShinobiChart chart, int seriesIndex)
+      protected override SChartData[] GetDataPoints (ShinobiChart chart, int seriesIndex)
       {
         return _dataPoints.ToArray ();
       }

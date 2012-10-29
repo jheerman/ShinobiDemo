@@ -6,6 +6,7 @@ using MonoTouch.UIKit;
 using System.Collections.Generic;
 using System.Net;
 using System.Linq;
+using System.Threading;
 
 namespace ShinobiStockChart
 {
@@ -47,7 +48,14 @@ namespace ShinobiStockChart
       
       UIApplication.SharedApplication.NetworkActivityIndicatorVisible = true;
       
-      FetchQuotes ();
+		ThreadPool.QueueUserWorkItem (state =>
+			                              {
+				FetchQuotes ();
+				InvokeOnMainThread (() => {
+	                    stockListTable.ReloadData ();
+	                    UIApplication.SharedApplication.NetworkActivityIndicatorVisible = false;
+				});
+		});
     }
     
     
@@ -92,9 +100,14 @@ namespace ShinobiStockChart
           try {
             // extract the symbol, price and change
             string symbol = components [0].Replace ("\"", "");
-            double quote = double.Parse (components [1]);
-            double change = double.Parse (components [2]);
-            
+			var quote = 0.0;
+			var change = 0.0;
+			if (!components[1].Contains ("N/A"))
+				quote = double.Parse (components [1]);
+			
+			if (!components[2].Contains ("N/A"))
+            	change = double.Parse (components [2]);
+			
             // locate the respective data item and update its state
             var stockItem = _stocks.SingleOrDefault (s => s.Symbol == symbol);
             if (stockItem != null) {
@@ -105,10 +118,6 @@ namespace ShinobiStockChart
           }
         }
       }
-      
-      // re-render the list
-      stockListTable.ReloadData ();
-      UIApplication.SharedApplication.NetworkActivityIndicatorVisible = false;
     }
     
     // a table source that renders our list of stocks
