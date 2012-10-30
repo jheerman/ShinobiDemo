@@ -85,28 +85,28 @@ namespace ShinobiStockChart
 				// split each item within the line
 				var components = line.Split (',');
 				if (components.Length > 1) {
-				try {
-					// extract the symbol, price and change
-					var symbol = components [0].Replace ("\"", "");
-					var quote = 0.0;
-					var change = 0.0;
-					if (!components[1].Contains ("N/A"))
-						quote = double.Parse (components [1]);
+					try {
+						// extract the symbol, price and change
+						var symbol = components [0].Replace ("\"", "");
+						var quote = 0.0;
+						var change = 0.0;
+						if (!components[1].Contains ("N/A"))
+							quote = double.Parse (components [1]);
 
-					if (!components[2].Contains ("N/A"))
-						change = double.Parse (components [2]);
+						if (!components[2].Contains ("N/A"))
+							change = double.Parse (components [2]);
 
-					// locate the respective data item and update its state
-					var stockItem = _stocks.SingleOrDefault (s => s.Symbol == symbol);
-					if (stockItem != null) {
-						stockItem.Price = quote;
-						stockItem.Change = change;
+						// locate the respective data item and update its state
+						var stockItem = _stocks.SingleOrDefault (s => s.Symbol == symbol);
+						if (stockItem != null) {
+							stockItem.Price = quote;
+							stockItem.Change = change;
+						}
 					}
+					catch { }
 				}
-				catch { }
 			}
 		}
-	}
 
 		// a table source that renders our list of stocks
 		private class TableSource : UITableViewSource
