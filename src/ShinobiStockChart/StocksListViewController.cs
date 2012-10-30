@@ -67,13 +67,6 @@ namespace ShinobiStockChart
       stockListTable.Source = new TableSource (this.NavigationController, _stocks);
     }
     
-    public override void ViewDidUnload ()
-    {
-      base.ViewDidUnload ();
-            
-      ReleaseDesignerOutlets ();
-    }
-    
     
     /// <summary>
     /// Fetches the current stock quote from Yahoo
